@@ -15,7 +15,7 @@ import 'package:provider/provider.dart';
 class HomePageModel extends FlutterFlowModel {
   ///  Local state fields for this page.
 
-  bool isProductListEmpty = true;
+  bool? isProductListEmpty = false;
 
   bool hasApiError = false;
 

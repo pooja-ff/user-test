@@ -53,6 +53,10 @@ class _HomePageWidgetState extends State<HomePageWidget> {
           setState(() {
             _model.isProductListEmpty = true;
           });
+        } else {
+          setState(() {
+            _model.isProductListEmpty = false;
+          });
         }
       } else {
         setState(() {
@@ -360,7 +364,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                     ),
                   ],
                 ),
-                if (_model.isProductListEmpty)
+                if (_model.isProductListEmpty ?? true)
                   Container(
                     width: 100.0,
                     height: 100.0,
@@ -369,7 +373,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                     ),
                     child: Text(
                       () {
-                        if (_model.isProductListEmpty) {
+                        if (_model.isProductListEmpty!) {
                           return 'Empty list';
                         } else if (_model.hasApiError) {
                           return 'Has API error';
@@ -380,114 +384,96 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                       style: FlutterFlowTheme.of(context).bodyText1,
                     ),
                   ),
-                Builder(
-                  builder: (context) {
-                    final randomList = EcommerceAPIGroup.listAllProductsCall
-                            .list(
-                              (_model.productApiResult?.jsonBody ?? ''),
-                            )
-                            ?.toList() ??
-                        [];
-                    return ListView.builder(
-                      padding: EdgeInsets.zero,
-                      shrinkWrap: true,
-                      scrollDirection: Axis.vertical,
-                      itemCount: randomList.length,
-                      itemBuilder: (context, randomListIndex) {
-                        final randomListItem = randomList[randomListIndex];
-                        return Text(
-                          randomListIndex.toString(),
-                          style: FlutterFlowTheme.of(context).bodyText1,
-                        );
-                      },
-                    );
-                  },
-                ),
-                Padding(
-                  padding: EdgeInsetsDirectional.fromSTEB(0.0, 20.0, 0.0, 0.0),
-                  child: Builder(
-                    builder: (context) {
-                      final productList = EcommerceAPIGroup.listAllProductsCall
-                              .list(
-                                (_model.productApiResult?.jsonBody ?? ''),
-                              )
-                              ?.toList() ??
-                          [];
-                      return MasonryGridView.count(
-                        crossAxisCount: 2,
-                        crossAxisSpacing: 10.0,
-                        mainAxisSpacing: 10.0,
-                        itemCount: productList.length,
-                        shrinkWrap: true,
-                        itemBuilder: (context, productListIndex) {
-                          final productListItem = productList[productListIndex];
-                          return InkWell(
-                            onTap: () async {
-                              context.pushNamed(
-                                'ProductDetailPage',
-                                queryParams: {
-                                  'productId': serializeParam(
-                                    getJsonField(
+                if (!_model.isProductListEmpty!)
+                  Padding(
+                    padding:
+                        EdgeInsetsDirectional.fromSTEB(0.0, 20.0, 0.0, 0.0),
+                    child: Builder(
+                      builder: (context) {
+                        final productList =
+                            EcommerceAPIGroup.listAllProductsCall
+                                    .list(
+                                      (_model.productApiResult?.jsonBody ?? ''),
+                                    )
+                                    ?.toList() ??
+                                [];
+                        return MasonryGridView.count(
+                          crossAxisCount: 2,
+                          crossAxisSpacing: 10.0,
+                          mainAxisSpacing: 10.0,
+                          itemCount: productList.length,
+                          shrinkWrap: true,
+                          itemBuilder: (context, productListIndex) {
+                            final productListItem =
+                                productList[productListIndex];
+                            return InkWell(
+                              onTap: () async {
+                                context.pushNamed(
+                                  'ProductDetailPage',
+                                  queryParams: {
+                                    'productId': serializeParam(
+                                      getJsonField(
+                                        productListItem,
+                                        r'''$.id''',
+                                      ),
+                                      ParamType.int,
+                                    ),
+                                  }.withoutNulls,
+                                );
+                              },
+                              child: Column(
+                                mainAxisSize: MainAxisSize.max,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsetsDirectional.fromSTEB(
+                                        0.0, 10.0, 0.0, 10.0),
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(5.0),
+                                      child: Image.network(
+                                        getJsonField(
+                                          productListItem,
+                                          r'''$.image''',
+                                        ),
+                                        width: double.infinity,
+                                        height: 100.0,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsetsDirectional.fromSTEB(
+                                        0.0, 10.0, 10.0, 10.0),
+                                    child: Text(
+                                      formatNumber(
+                                        getJsonField(
+                                          productListItem,
+                                          r'''$.price''',
+                                        ),
+                                        formatType: FormatType.decimal,
+                                        decimalType: DecimalType.automatic,
+                                        currency: '\$',
+                                      ),
+                                      style: FlutterFlowTheme.of(context)
+                                          .bodyText1,
+                                    ),
+                                  ),
+                                  Text(
+                                    '${getJsonField(
                                       productListItem,
-                                      r'''$.id''',
-                                    ),
-                                    ParamType.int,
-                                  ),
-                                }.withoutNulls,
-                              );
-                            },
-                            child: Column(
-                              mainAxisSize: MainAxisSize.max,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Padding(
-                                  padding: EdgeInsetsDirectional.fromSTEB(
-                                      0.0, 10.0, 0.0, 10.0),
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(5.0),
-                                    child: Image.network(
-                                      getJsonField(
-                                        productListItem,
-                                        r'''$.image''',
-                                      ),
-                                      width: double.infinity,
-                                      height: 100.0,
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: EdgeInsetsDirectional.fromSTEB(
-                                      0.0, 10.0, 10.0, 10.0),
-                                  child: Text(
-                                    formatNumber(
-                                      getJsonField(
-                                        productListItem,
-                                        r'''$.price''',
-                                      ),
-                                      formatType: FormatType.decimal,
-                                      decimalType: DecimalType.automatic,
-                                      currency: '\$',
-                                    ),
+                                      r'''$.title''',
+                                    ).toString()}aaa',
                                     style:
                                         FlutterFlowTheme.of(context).bodyText1,
                                   ),
-                                ),
-                                Text(
-                                  '${getJsonField(
-                                    productListItem,
-                                    r'''$.title''',
-                                  ).toString()}aaa',
-                                  style: FlutterFlowTheme.of(context).bodyText1,
-                                ),
-                              ],
-                            ),
-                          );
-                        },
-                      );
-                    },
+                                ],
+                              ),
+                            );
+                          },
+                        );
+                      },
+                    ),
                   ),
-                ),
               ],
             ),
           ),
