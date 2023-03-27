@@ -6,14 +6,23 @@ import '/flutter_flow/flutter_flow_util.dart';
 import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 class HomePageModel extends FlutterFlowModel {
+  ///  Local state fields for this page.
+
+  bool isProductListEmpty = true;
+
+  bool hasApiError = false;
+
   ///  State fields for stateful widgets in this page.
 
+  // Stores action output result for [Backend Call - API (listAllProducts)] action in HomePage widget.
+  ApiCallResponse? productApiResult;
   // State field(s) for TextField widget.
   TextEditingController? textController;
   String? Function(BuildContext, String?)? textControllerValidator;

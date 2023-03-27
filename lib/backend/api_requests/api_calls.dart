@@ -112,6 +112,11 @@ class ListAllProductsCall {
         r'''$[:].image''',
         true,
       );
+  dynamic list(dynamic response) => getJsonField(
+        response,
+        r'''$''',
+        true,
+      );
 }
 
 class GetProductCall {
